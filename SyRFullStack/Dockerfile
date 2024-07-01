@@ -14,6 +14,9 @@ COPY src ./src
 # Empaqueta la aplicación Spring Boot como un JAR ejecutable
 RUN mvn package -DskipTests
 
+# Verifica si el archivo JAR fue generado
+RUN ls -l target/
+
 # Fase 2: Creación de una imagen más ligera solo con JRE
 FROM openjdk:17-jdk-slim
 
@@ -21,10 +24,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copia el JAR generado desde la fase de construcción
-COPY --from=build /app/target/SyRFullStack.jar .
+COPY --from=build /app/target/SyRFullStack-0.0.1-SNAPSHOT.jar ./app.jar
 
 # Exponer el puerto 8081 para la aplicación Spring Boot
 EXPOSE 8081
 
 # Define el comando a ejecutar cuando se inicie el contenedor
-CMD ["java", "-jar", "SyRFullStack.jar"]
+CMD ["java", "-jar", "app.jar"]
